@@ -1,4 +1,4 @@
-name = "musestarlinkpay71"   # 去掉大写和连续数字，用短横线分隔
+name = "muse-starlink-pay-71"          # 全小写，用横线分隔
 main = "worker.js"
 type = "javascript"
 account_id = "APU470Hi_e3CmNFbSLr-gREKxjwiggaLf8cwPk_5"
@@ -7,10 +7,9 @@ workers_dev = true
 [triggers]
 crons = ["0 * * * *"] # hourly
 
-kv_namespaces = [
-  { binding = "NODES_KV", id = "ff5529a841224bb6b36788cbc51bdafa" },
-  { binding = "RATE_KV",  id = "ff5529a841224bb6b36788cbc51bdafa" }
-]
+[[kv_namespaces]]
+binding = "KV"			#KV绑定名默认不可修改
+id = "ff5529a841224bb6b36788cbc51bdafa"					#KV据库id
 
 [vars]
 # DEFAULT_SOURCES can be set as a secret via `wrangler secret put DEFAULT_SOURCES` or kept here for testing
