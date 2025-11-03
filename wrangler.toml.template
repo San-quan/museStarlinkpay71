@@ -1,0 +1,20 @@
+name = "museStarlinkpay71"
+main = "worker.js"
+# In CI the placeholders below will be replaced from repository secrets
+account_id = "__CF_ACCOUNT_ID__"
+workers_dev = true
+compatibility_date = "2025-11-03"
+
+[triggers]
+crons = ["0 * * * *"]
+
+kv_namespaces = [
+  { binding = "NODES_KV", id = "__NODES_KV_ID__" },
+  { binding = "RATE_KV", id = "__RATE_KV_ID__" }
+]
+
+[vars]
+# DEFAULT_SOURCES should be set via wrangler secret put DEFAULT_SOURCES for production
+DEFAULT_SOURCES = '[]'
+
+# Note: CI will replace placeholders __CF_ACCOUNT_ID__, __NODES_KV_ID__, __RATE_KV_ID__ with secrets before publishing.
