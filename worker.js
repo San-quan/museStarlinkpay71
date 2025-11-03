@@ -20,7 +20,7 @@ function base64Decode(s){
 // parse vmess://<base64>
 function parseVmessUrl(u){
   try{
-    const b = u.replace(/^vmess:\/\/i,'');
+    const b = u.replace(/^vmess:\/\//i,'');
     const jsonStr = base64Decode(b);
     if(!jsonStr) return null;
     const j = JSON.parse(jsonStr);
@@ -37,7 +37,7 @@ function parseVmessUrl(u){
   }catch(e){ return null; }
 }
 
-// parse socks://base64user:pass@host:port?method=auto  (we'll handle common forms)
+// parse socks://user:pass@host:port
 function parseSocksUrl(u){
   try{
     const m = u.match(/^socks:\/\/([^@]+)@([^:\/]+):(\d+)/i);
@@ -59,7 +59,6 @@ function parseClashYaml(text){
     const doc = YAML.parse(text);
     if(!doc || !doc.proxies) return [];
     return doc.proxies.map(p => {
-      // keep raw proxy object but normalize some fields
       return {
         name: p.name || p['remark'] || `${p.type}-${p.server||'unknown'}`,
         type: p.type,
@@ -86,7 +85,6 @@ async function fetchSourceText(src){
 
 // dedupe key generator
 function nodeKey(n){
-  // prefer protocol+server+port+uuid if exists
   if(n.type && n.server && n.port) return `${n.type}|${n.server}|${n.port}|${n.uuid||''}`;
   return JSON.stringify([n.type,n.server,n.port,n.name]);
 }
@@ -101,7 +99,6 @@ function buildClashYaml(obj){
     if(p.server) o.server = p.server;
     if(p.port) o.port = p.port;
     if(p.cipher) o.cipher = p.cipher;
-    // include raw fields as comments in note if available
     if(p.note) o.note = p.note;
     return o;
   });
@@ -114,7 +111,6 @@ export default {
   async fetch(request, env, ctx){
     const url = new URL(request.url);
     const token = url.searchParams.get('token') || '';
-    // Validate token via secrets (MAIN_TOKEN/GUEST_TOKEN)
     const mainToken = env.MAIN_TOKEN || '';
     const guestToken = env.GUEST_TOKEN || '';
     if(!token || (token !== mainToken && token !== guestToken)) {
@@ -154,7 +150,7 @@ export default {
       };
       const target = url.searchParams.get('target') || 'clash';
       const encode = url.searchParams.get('encode') || 'plain';
-      if(target === 'clash'){ 
+      if(target === 'clash'){
         const yaml = buildClashYaml(sample);
         if(encode === 'base64') return new Response(base64Encode(yaml), { headers: { 'Content-Type':'text/plain' }});
         return new Response(yaml, { headers: { 'Content-Type':'text/plain' }});
@@ -168,11 +164,8 @@ export default {
     const seen = new Set();
 
     for(const src of sources){
-      // support sources that include sub-target parameter (common patterns)
-      // fetch and try to parse
       const text = await fetchSourceText(src);
       if(!text) continue;
-      // detect
       if(text.includes('proxies:')) {
         const parsed = parseClashYaml(text);
         for(const p of parsed){
@@ -180,7 +173,6 @@ export default {
           if(!seen.has(k)){ aggregated.proxies.push(p); seen.add(k); }
         }
       } else if(src.startsWith('vmess://') || text.trim().startsWith('vmess://')){
-        // may be list of vmess lines or single vmess
         const lines = (text.indexOf('\n')!==-1)? text.split(/\r?\n/): [text];
         for(const l of lines){
           if(!l.trim()) continue;
@@ -199,14 +191,12 @@ export default {
           if(!seen.has(k)){ aggregated.proxies.push(p); seen.add(k); }
         }
       } else {
-        // try base64 decode & JSON parse for vmess lists
         const maybe = base64Decode(text.trim());
         if(maybe){
           try{
             const j = JSON.parse(maybe);
             if(Array.isArray(j)){
               for(const item of j){
-                // best-effort extract server/port
                 if(item.add || item.server){
                   const p = {
                     name: item.ps || item.name || `${item.add||item.server}:${item.port||item.p}`,
@@ -222,7 +212,6 @@ export default {
             }
           }catch(e){ /* ignore */ }
         } else {
-          // unknown format: keep a note so admin can inspect
           const p = { name:`raw-src:${src}`, type:'raw', note:'未解析的订阅或受限源', rawText: text.slice(0,200) };
           const k = nodeKey(p);
           if(!seen.has(k)){ aggregated.proxies.push(p); seen.add(k); }
@@ -230,7 +219,7 @@ export default {
       }
     }
 
-    // build default groups & rules (you can enhance ACL generator separately)
+    // build default groups & rules
     aggregated['proxy-groups'] = [
       { name: "回国", type: "select", proxies: aggregated.proxies.map(p => p.name).slice(0,5) },
       { name: "Fallback", type: "fallback", proxies: aggregated.proxies.map(p => p.name) }
@@ -244,7 +233,6 @@ export default {
     // persist nodes to KV NODES_KV for detection & history (best-effort, non-blocking)
     try{
       if(env.NODES_KV){
-        // store a compact nodes list
         const nodesCompact = aggregated.proxies.map(p => ({
           key: nodeKey(p), name:p.name, type:p.type, server:p.server, port:p.port, note:p.note||''
         }));
@@ -262,15 +250,14 @@ export default {
     } else {
       out = JSON.stringify(aggregated, null, 2);
     }
-    if(encode === 'base64'){
-      return new Response(base64Encode(out), { headers: { 'Content-Type':'text/plain'}});
+    if(encode === 'base64'){ 
+      return new Response(base64Encode(out), { headers: { 'Content-Type':'text/plain' }});
     }
-    return new Response(out, { headers: { 'Content-Type':'text/plain'}});
+    return new Response(out, { headers: { 'Content-Type':'text/plain' }});
   },
 
   // scheduled handler: hourly diff + Telegram notify using KV snapshots
   async scheduled(controller, env, ctx){
-    // get latest nodes from NODES_KV and compare with previous snapshot; if changed, send TG message
     try{
       if(!env.NODES_KV || !env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return;
       const latestRaw = await env.NODES_KV.get('nodes:latest');
@@ -279,10 +266,8 @@ export default {
       const prevRaw = await env.NODES_KV.get('nodes:prev');
       const prev = prevRaw ? JSON.parse(prevRaw) : null;
       const changed = !prevRaw || JSON.stringify(prev.nodes) !== JSON.stringify(latest.nodes);
-      // store current as prev for next time
       await env.NODES_KV.put('nodes:prev', JSON.stringify(latest));
       if(changed){
-        // build short report
         const add = latest.nodes.length - (prev ? prev.nodes.length : 0);
         const msg = `【museStarlinkpay71】订阅节点更新\n总节点: ${latest.nodes.length}\n变动: ${add >=0 ? '+'+add : add}\n时间: ${new Date(latest.ts).toISOString()}`;
         const bot = env.TELEGRAM_BOT_TOKEN;

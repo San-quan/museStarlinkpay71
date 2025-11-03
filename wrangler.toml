@@ -1,0 +1,20 @@
+name = "museStarlinkpay71"
+main = "worker.js"
+type = "javascript"
+account_id = "APU470Hi_e3CmNFbSLr-gREKxjwiggaLf8cwPk_5"
+workers_dev = true
+
+[triggers]
+crons = ["0 * * * *"] # hourly
+
+[kv_namespaces]
+bindings = [
+  { binding = "NODES_KV", id = "ff5529a841224bb6b36788cbc51bdafa" },
+  { binding = "RATE_KV", id = "ff5529a841224bb6b36788cbc51bdafa" }
+]
+
+[vars]
+# DEFAULT_SOURCES can be set as a secret via `wrangler secret put DEFAULT_SOURCES` or kept here for testing
+DEFAULT_SOURCES = '["https://url.v1.mk/sub?target=clash&url=https%3A%2F%2Fsanbao66.6069996.workers.dev%2F93a56329-356f-18cd-ddef-bc584e0be898%2Fsub&insert=false","https://msub.xn--m7r52rosihxm.com/api/v1/client/subscribe?token=06c4af0e38faa29d55a0374b08fa3be1","vmess://YXV0bzo2YmFjYTI5OC1kYmFmLTQ0NzUtYmUwOC0wYTNiYjhlYTM2ZmNAMTIwLjI2LjI0NS42OTo1Mjc1Mg?remarks=22ces&alterId=0","socks://cGVmOmFyZUAzNi4yMTIuMjIzLjIzNDoxMTYwNA?method=auto","https://sanbao66.6069996.workers.dev/93a56329-356f-18cd-ddef-bc584e0be898/sub","https://s00.btfpi.cn/ss?token=c80992d6becc2bc2ae5ec7b5b0054bde']'
+
+# Route for custom domain (bind in Cloudflare Dashboard): pay71.snk567.cc/cc
