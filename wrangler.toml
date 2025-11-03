@@ -1,4 +1,4 @@
-name = "museStarlinkpay71"
+name = "musestarlinkpay71"   # 去掉大写和连续数字，用短横线分隔
 main = "worker.js"
 type = "javascript"
 account_id = "APU470Hi_e3CmNFbSLr-gREKxjwiggaLf8cwPk_5"
@@ -7,10 +7,9 @@ workers_dev = true
 [triggers]
 crons = ["0 * * * *"] # hourly
 
-[kv_namespaces]
-bindings = [
+kv_namespaces = [
   { binding = "NODES_KV", id = "ff5529a841224bb6b36788cbc51bdafa" },
-  { binding = "RATE_KV", id = "ff5529a841224bb6b36788cbc51bdafa" }
+  { binding = "RATE_KV",  id = "ff5529a841224bb6b36788cbc51bdafa" }
 ]
 
 [vars]
