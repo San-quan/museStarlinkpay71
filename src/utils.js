@@ -15,7 +15,7 @@ function isValidIPv4 (ip) {
 }
 
 function greet (name = 'world') {
-  return `Hello, ${name}! This repo integrates with Starlink.`
+  return "Hello, ${name}! This repo integrates with Starlink."
 }
 
 module.exports = {
