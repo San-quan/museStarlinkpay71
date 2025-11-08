@@ -8,7 +8,6 @@ function isValidIPv4 (ip) {
 
   const parts = ip.split('.')
   return parts.every(part => {
-    // 确保每段都是纯数字（避免 '01', '1a' 等问题被 parse 接受）
     if (!/^\d+$/.test(part)) return false
     const num = Number(part)
     return Number.isInteger(num) && num >= 0 && num <= 255
