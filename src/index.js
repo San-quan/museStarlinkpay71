@@ -1,17 +1,17 @@
-/**
- * Entry point for museStarlinkpay71
- * This file provides a minimal example and export for unit tests.
- */
+// src/index.js
+// 应用入口（项目骨架）
+// TODO: 根据需要引导各个模块并启动服务
 
-const { greet } = require('./utils.js')
+const config = require('./config/manager');
 
-function main () {
-  // Demo run
-  console.log(greet(process.env.USER || 'operator'))
+function start() {
+ console.log('Starting museStarlinkpay71 (skeleton) ...');
+ console.log('Loaded config:', Object.keys(config));
+ // TODO: 初始化 router, auth, notification 等模块
 }
+
+module.exports = { start };
 
 if (require.main === module) {
-  main()
+ start();
 }
-
-module.exports = { greet }

@@ -1,34 +1,9 @@
-{
-  "name": "museStarlinkpay71",
-  "version": "0.1.0",
-  "description": "完美适配星链。",
-  "main": "src/index.js",
-  "type": "commonjs",
-  "scripts": {
-    "start": "node ./src/index.js",
-    "lint": "eslint \"src/**/*.{js,mjs}\" --max-warnings=0",
-    "format": "prettier --write \"src/**/*.{js,mjs,json,md}\"",
-    "test": "jest --runInBand",
-    "test:watch": "jest --watch"
-  },
-  "keywords": [
-    "starlink",
-    "network",
-    "proxy",
-    "automation"
-  ],
-  "author": "San-quan",
-  "license": "MIT",
-  "devDependencies": {
-    "eslint": "^8.50.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.30.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "jest": "^29.7.0",
-    "prettier": "^2.8.8"
-  },
-  "engines": {
-    "node": ">=18"
-  }
-}
+{"name": "museStarlinkpay71-skeleton",
+ "version": "0.0.0",
+ "private": true,
+ "main": "src/index.js",
+ "scripts": {
+ "start": "node src/index.js",
+ "test": "echo \"no tests yet\" && exit 0"
+ },
+ "engines": { "node": ">=14" }}

@@ -1,11 +1,4 @@
-/node_modules
-/dist
-/.env
-/.cache
+node_modules/
+.env
 .DS_Store
-coverage
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-*.pem
-*.key
+coverage/
