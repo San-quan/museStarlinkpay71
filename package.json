@@ -5,10 +5,11 @@
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node ./src/index.js",
-    "lint": "eslint \"src/**/*.{js,mjs}\" --max-warnings=0",
-    "format": "prettier --write \"src/**/*.{js,mjs,json,md}\"",
+    "start": "node src/index.js",
     "test": "jest --runInBand",
+    "lint": "eslint \"src/**/*.{js,mjs}\" --max-warnings=0",
+    "build": "echo \"no build\"",
+    "format": "prettier --write \"src/**/*.{js,mjs,json,md}\"",
     "test:watch": "jest --watch"
   },
   "keywords": [
