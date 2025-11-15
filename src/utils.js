@@ -1,24 +1,13 @@
 /**
- * Utility functions for museStarlinkpay71
+ * Small network helper utilities (examples)
  */
 
-function isValidIPv4 (ip) {
-  const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/
-  if (typeof ip !== 'string' || !ipv4Regex.test(ip)) return false
-
+export function isValidIPv4 (ip) {
+  if (typeof ip !== 'string') return false
   const parts = ip.split('.')
-  return parts.every(part => {
-    if (!/^\d+$/.test(part)) return false
-    const num = Number(part)
-    return Number.isInteger(num) && num >= 0 && num <= 255
+  if (parts.length !== 4) return false
+  return parts.every(p => {
+    const n = Number(p)
+    return Number.isInteger(n) && n >= 0 && n <= 255 && String(n) === p
   })
-}
-
-function greet (name = 'world') {
-  return 'Hello, ' + name + '! This repo integrates with Starlink.'
-}
-
-module.exports = {
-  isValidIPv4,
-  greet
 }

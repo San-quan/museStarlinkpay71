@@ -3,15 +3,9 @@
  * This file provides a minimal example and export for unit tests.
  */
 
-const { greet } = require('./utils.js')
-
-function main () {
-  // Demo run
-  console.log(greet(process.env.USER || 'operator'))
+export function greet (name = 'world') {
+  return `Hello, ${name}! This repo integrates with Starlink.`
 }
 
-if (require.main === module) {
-  main()
-}
-
-module.exports = { greet }
+// Demo run
+console.log(greet(process.env.USER || 'operator'))
