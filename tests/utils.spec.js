@@ -1,16 +1,15 @@
-const { isValidIPv4 } = require('../src/utils.js');
+import { isValidIPv4 } from '../src/utils.js'
 
-describe('Utils', () => {
-  test('isValidIPv4 should validate correct IPv4 addresses', () => {
-    expect(isValidIPv4('192.168.1.1')).toBe(true);
-    expect(isValidIPv4('10.0.0.1')).toBe(true);
-    expect(isValidIPv4('255.255.255.255')).toBe(true);
-  });
+describe('isValidIPv4', () => {
+  test('valid addresses', () => {
+    expect(isValidIPv4('127.0.0.1')).toBe(true)
+    expect(isValidIPv4('192.168.1.1')).toBe(true)
+  })
 
-  test('isValidIPv4 should reject invalid IPv4 addresses', () => {
-    expect(isValidIPv4('192.168.1.256')).toBe(false);
-    expect(isValidIPv4('192.168.1')).toBe(false);
-    expect(isValidIPv4('192.168.1.1.1')).toBe(false);
-    expect(isValidIPv4('invalid')).toBe(false);
-  });
-});
+  test('invalid addresses', () => {
+    expect(isValidIPv4('256.1.1.1')).toBe(false)
+    expect(isValidIPv4('abc')).toBe(false)
+    expect(isValidIPv4('127.0.0')).toBe(false)
+    expect(isValidIPv4('01.02.03.04')).toBe(false)
+  })
+})
