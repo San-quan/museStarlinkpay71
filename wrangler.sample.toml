@@ -1,0 +1,12 @@
+name = "muse-baobao-worker"
+main = "configs/cloudflare_worker.js"
+compatibility_date = "2025-11-24"
+type = "javascript"
+workers_dev = true
+
+# Fill `account_id` and (optionally) `route`/`zone_id` if you publish to a zone
+account_id = ""
+
+[vars]
+# Example environment variables used by the worker
+# BACKEND_ORIGIN = "https://example.com:10000"
